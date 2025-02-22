@@ -1,0 +1,137 @@
+.hero {
+  position: relative;
+  height: 89vh;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  text-align: center;
+  cursor: default;
+}
+
+.hero-container img {
+  cursor: default;
+}
+
+.btn {
+  cursor: pointer;
+  background-color: #ff5500;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight);
+  margin-top: 1rem;
+  transition: all 0.7s;
+}
+.btn:hover {
+  background-color: #ffffff;
+  color: #ff5500;
+  
+}
+
+.btn:hover {
+  background-color: #ffffff;
+  color: #ff5500;
+  transform: scale(1.1); /* Slight burst effect */
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.5);
+}
+
+.btn:active {
+  transform: scale(1.2); /* More burst when clicked */
+  transition: transform 0.2s ease-out;
+}
+
+
+.btn:hover {
+  animation: pop 0.4s ease-in-out;
+}
+
+.cta {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.hero-text {
+  font-size: 2.5rem;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight);
+  color: black;
+  z-index: 1;
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.hero-bottom-dog {
+  position: absolute;
+  bottom: 0rem;
+  height: 40rem;
+  width: auto;
+  z-index: 1;
+}
+
+@media (max-width: 1200px) {
+  .hero-text {
+    font-size: 2rem;
+  }
+
+  .btn {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-text {
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-text {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+  }
+
+  .hero-bottom-dog {
+    height: 30rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-text {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+  }
+
+  .wave {
+    height: 20rem;
+  }
+
+  .hero-bottom-dog {
+    height: 20rem;
+  }
+}
