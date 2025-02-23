@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  height: 89vh;
+  height: 100vh;
 }
 
 .hero-container {
@@ -31,28 +31,16 @@
   margin-top: 1rem;
   transition: all 0.7s;
 }
-.btn:hover {
-  background-color: #ffffff;
-  color: #ff5500;
-  
-}
+
 
 .btn:hover {
   background-color: #ffffff;
   color: #ff5500;
-  transform: scale(1.1); /* Slight burst effect */
+  transform: scale(1.1); 
   box-shadow: 0 0 20px rgba(255, 85, 0, 0.5);
-}
-
-.btn:active {
-  transform: scale(1.2); /* More burst when clicked */
-  transition: transform 0.2s ease-out;
-}
-
-
-.btn:hover {
   animation: pop 0.4s ease-in-out;
 }
+
 
 .cta {
   position: absolute;
@@ -129,6 +117,7 @@
 
   .wave {
     height: 20rem;
+    width: 28rem ;
   }
 
   .hero-bottom-dog {

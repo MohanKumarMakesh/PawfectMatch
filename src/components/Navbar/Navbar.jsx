@@ -5,9 +5,9 @@ import logo from "../../assets/dog-logo.png";
 const Menu = () => {
   return (
     <>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact</a>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
       <a href="/signup">Signup</a>
     </>
   );

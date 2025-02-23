@@ -6,7 +6,7 @@ import dog from "../../assets/dog.png";
 const Hero = () => {
   return (
     <>
-      <div className="hero">
+      <div className="hero" id="home">
         <div className="hero-container">
           <div className="cta">
             <h1 className="hero-text">Find the Pawfect Match</h1>
