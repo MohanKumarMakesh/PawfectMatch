@@ -2,22 +2,37 @@ import React, { useState } from "react";
 import "./navbar.css";
 import logo from "../../assets/dog-logo.png";
 
-const Menu = () => {
+const Menu = ({ onSignupClick, onLoginClick }) => {
   return (
     <>
       <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
-      <a href="/signup">Signup</a>
+      <a href="#signup" onClick={onSignupClick}>
+        Signup
+      </a>
+      <a href="#login" onClick={onLoginClick}>
+        Login
+      </a>
     </>
   );
 };
 
-const Navbar = () => {
+const Navbar = ({ onSignup, onLogin }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSignupClick = (e) => {
+    e.preventDefault();
+    onSignup();
+  };
+
+  const handleLoginClick = (e) => {
+    e.preventDefault();
+    onLogin();
   };
 
   return (
@@ -28,7 +43,10 @@ const Navbar = () => {
         </a>
         <span className="navbar-text">PawfectMatch</span>
         <div className={`navbar-links ${isOpen ? "open" : ""}`}>
-          <Menu />
+          <Menu
+            onSignupClick={handleSignupClick}
+            onLoginClick={handleLoginClick}
+          />
         </div>
         <div className="hamburger" onClick={toggleMenu}>
           <div></div>

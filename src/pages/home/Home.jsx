@@ -4,10 +4,11 @@ import Hero from "../../components/Hero/Hero";
 import About from "../../components/About/About";
 import Adopt from "../../components/Adopt/Adopt";
 import Contact from "../../components/Contact/Contact";
-const Home = () => {
+
+const Home = ({ onSignup, onLogin }) => {
   return (
     <>
-      <Navbar />
+      <Navbar onSignup={onSignup} onLogin={onLogin} />
       <Hero />
       <About />
       <Adopt />
