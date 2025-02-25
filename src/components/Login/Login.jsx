@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import DOMPurify from "dompurify";
-import "../Signup/signup.css";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import "../../../firebaseConfig.js"; // Ensure Firebase is initialized
 
 const Login = ({ onClose, onSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@(gmail\.com|outlook\.com|yahoo\.com)$/;
@@ -17,7 +25,7 @@ const Login = ({ onClose, onSignup }) => {
     return re.test(password);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -38,12 +46,31 @@ const Login = ({ onClose, onSignup }) => {
     const sanitizedEmail = DOMPurify.sanitize(email);
     const sanitizedPassword = DOMPurify.sanitize(password);
 
-    // Handle login logic here (e.g., send data to the server)
-    console.log("Sanitized Email:", sanitizedEmail);
-    console.log("Sanitized Password:", sanitizedPassword);
+    // Firebase login
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, sanitizedEmail, sanitizedPassword);
+      console.log("User logged in successfully");
+      onClose();
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setError(error.message);
+    }
+  };
 
-    // Close the modal after successful login
-    onClose();
+  const handleGoogleLogin = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Google Sign-In successful:", result.user);
+      onClose();
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+      setError("Failed to log in with Google. Please try again.");
+    }
   };
 
   return (
@@ -71,6 +98,9 @@ const Login = ({ onClose, onSignup }) => {
           />
           <button type="submit">Log In</button>
         </form>
+        <button className="google-login" onClick={handleGoogleLogin}>
+          Log in with Google
+        </button>
         <p className="signup-link">
           Don't have an account?{" "}
           <a href="#signup" onClick={onSignup}>

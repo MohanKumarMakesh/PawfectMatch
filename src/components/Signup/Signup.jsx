@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import DOMPurify from "dompurify";
 import "./signup.css";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import "../../../firebaseConfig"; // Ensure Firebase is initialized
 
 const Signup = ({ onClose, onLogin }) => {
   const [email, setEmail] = useState("");
@@ -18,7 +25,7 @@ const Signup = ({ onClose, onLogin }) => {
     return re.test(password);
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -44,12 +51,33 @@ const Signup = ({ onClose, onLogin }) => {
     const sanitizedEmail = DOMPurify.sanitize(email);
     const sanitizedPassword = DOMPurify.sanitize(password);
 
-    // Handle sign-up logic here (e.g., send data to the server)
-    console.log("Sanitized Email:", sanitizedEmail);
-    console.log("Sanitized Password:", sanitizedPassword);
+    // Firebase signup
+    const auth = getAuth();
+    try {
+      await createUserWithEmailAndPassword(
+        auth,
+        sanitizedEmail,
+        sanitizedPassword
+      );
+      console.log("User signed up successfully");
+      onClose();
+    } catch (error) {
+      console.error("Error signing up:", error);
+      setError(error.message);
+    }
+  };
 
-    // Close the modal after successful sign-up
-    onClose();
+  const handleGoogleSignup = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Google Sign-Up successful:", result.user);
+      onClose();
+    } catch (error) {
+      console.error("Error during Google Sign-Up:", error);
+      setError("Failed to sign up with Google. Please try again.");
+    }
   };
 
   return (
@@ -84,6 +112,9 @@ const Signup = ({ onClose, onLogin }) => {
           />
           <button type="submit">Sign Up</button>
         </form>
+        <button className="google-signup" onClick={handleGoogleSignup}>
+          Sign up with Google
+        </button>
         <p className="login-link">
           Already have an account?{" "}
           <a href="#login" onClick={onLogin}>
