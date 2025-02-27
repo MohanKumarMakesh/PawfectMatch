@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import DOMPurify from "dompurify";
 import "./signup.css";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
-import "../../../firebaseConfig"; // Ensure Firebase is initialized
+import { auth, googleProvider } from "../../../firebaseConfig";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 const Signup = ({ onClose, onLogin }) => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@(gmail\.com|outlook\.com|yahoo\.com)$/;
@@ -52,15 +50,36 @@ const Signup = ({ onClose, onLogin }) => {
     const sanitizedPassword = DOMPurify.sanitize(password);
 
     // Firebase signup
-    const auth = getAuth();
     try {
-      await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         sanitizedEmail,
         sanitizedPassword
       );
-      console.log("User signed up successfully");
-      onClose();
+      const idToken = await userCredential.user.getIdToken();
+      console.log(idToken);
+      const response = await fetch("http://localhost:8000/api/user/signup/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email: sanitizedEmail,
+          password: sanitizedPassword,
+          idToken,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log("User signed up successfully:", data);
+        localStorage.setItem("access_token", data.tokens.access);
+        localStorage.setItem("refresh_token", data.tokens.refresh);
+        onClose();
+        navigate("/dashboard");
+      } else {
+        throw new Error(data.error || "Signup failed");
+      }
     } catch (error) {
       console.error("Error signing up:", error);
       setError(error.message);
@@ -68,15 +87,35 @@ const Signup = ({ onClose, onLogin }) => {
   };
 
   const handleGoogleSignup = async () => {
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
+    setError("");
+
     try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("Google Sign-Up successful:", result.user);
-      onClose();
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const idToken = await userCredential.user.getIdToken();
+      const response = await fetch("http://localhost:8000/api/user/signup/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: userCredential.user.displayName,
+          email: userCredential.user.email,
+          idToken,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log("User signed up successfully with Google:", data);
+        localStorage.setItem("access_token", data.tokens.access);
+        localStorage.setItem("refresh_token", data.tokens.refresh);
+        onClose();
+        navigate("/dashboard");
+      } else {
+        throw new Error(data.error || "Signup with Google failed");
+      }
     } catch (error) {
-      console.error("Error during Google Sign-Up:", error);
-      setError("Failed to sign up with Google. Please try again.");
+      console.error("Error signing up with Google:", error);
+      setError(error.message);
     }
   };
 
@@ -89,6 +128,13 @@ const Signup = ({ onClose, onLogin }) => {
         <h2>Sign Up</h2>
         {error && <p className="error">{error}</p>}
         <form onSubmit={handleSignup}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
           <input
             type="email"
             placeholder="Email"
@@ -112,8 +158,8 @@ const Signup = ({ onClose, onLogin }) => {
           />
           <button type="submit">Sign Up</button>
         </form>
-        <button className="google-signup" onClick={handleGoogleSignup}>
-          Sign up with Google
+        <button onClick={handleGoogleSignup} className="google-signup">
+          Sign Up with Google
         </button>
         <p className="login-link">
           Already have an account?{" "}

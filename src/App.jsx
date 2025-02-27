@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
-
+import Dashboard from "./pages/dashboard/Dashboard";
 function App() {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -21,6 +21,7 @@ function App() {
             />
           }
         />
+        <Route path="/dashboard" element={<Dashboard />} />
         {/* Add more routes here */}
       </Routes>
       {showSignup && (

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Buddy",
+    "breed": "Labrador",
+    "county": "Dublin",
+    "image": "https://source.unsplash.com/1600x900/?dog"
+  },
+  {
+    "name": "Max",
+    "breed": "Beagle",
+    "county": "Cork",
+    "image": "https://source.unsplash.com/1600x900/?dog"
+  },
+  {
+    "name": "Bella",
+    "breed": "German Shepherd",
+    "county": "Galway",
+    "image": "https://source.unsplash.com/1600x900/?dog"
+  },
+  {
+    "name": "Lucy",
+    "breed": "Bulldog",
+    "county": "Limerick",
+    "image": "https://source.unsplash.com/1600x900/?dog"
+  }
+]
