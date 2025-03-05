@@ -37,6 +37,15 @@ jobs:
             cd ~/reactapp && npm install
           '
 
+      - name: Install PM2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use node
+            npm install -g pm2
+          '
+
       - name: Build the project
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} '
