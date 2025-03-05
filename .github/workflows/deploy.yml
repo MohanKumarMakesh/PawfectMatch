@@ -40,4 +40,4 @@ jobs:
       - name: Sync S3 bucket
         run: |
           pwd
-          aws s3 sync actions-runner/_work/PawfectMatch/Pawfectmatch/dist s3://${{ secrets.S3_BUCKET_NAME }} --delete
+          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }} --delete
