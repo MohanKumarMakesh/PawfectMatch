@@ -16,10 +16,16 @@
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .logout-button:hover {
   background-color: #e04e00;
+}
+
+.logout-button .icon {
+  margin-right: 0.5rem;
 }
 
 .dashboard-container h1 {
@@ -44,7 +50,7 @@
   font-size: 1rem;
 }
 
-.card-container {
+.adopt-card-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
@@ -83,6 +89,7 @@
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .card button:hover {
@@ -91,10 +98,30 @@
 
 /* Media query for mobile devices */
 @media (max-width: 768px) {
+  .search-bar {
+    flex-direction: column;
+    margin: 1rem;
+  }
+  .header{
+    flex-direction: column;
+  }
+  .search-bar select {
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+
+  .adopt-card-container {
+    grid-template-columns: 1fr;
+  }
+
   .card {
     width: 100%;
   }
-  .card-container {
-    grid-template-columns: 1fr;
+
+  .logout-button {
+    font-size: small;
+    margin: 12px;
   }
+
+ 
 }

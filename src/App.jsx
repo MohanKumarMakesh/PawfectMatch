@@ -5,6 +5,8 @@ import Home from "./pages/home/Home";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+
 function App() {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -21,8 +23,22 @@ function App() {
             />
           }
         />
-        <Route path="/dashboard" element={<Dashboard />} />
-        {/* Add more routes here */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={<Signup onClose={() => setShowSignup(false)} />}
+        />
+        <Route
+          path="/login"
+          element={<Login onClose={() => setShowLogin(false)} />}
+        />
       </Routes>
       {showSignup && (
         <Signup

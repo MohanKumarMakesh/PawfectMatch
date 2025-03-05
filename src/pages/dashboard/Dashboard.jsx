@@ -88,7 +88,7 @@ const Dashboard = () => {
           <option value="Limerick">Limerick</option>
         </select>
       </div>
-      <div className="card-container">
+      <div className="adopt-card-container">
         {filteredDogs.map((dog, index) => (
           <div className="card" key={index}>
             <img src={dog.image} alt={dog.name} />
