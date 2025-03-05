@@ -16,7 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14" # Specify the Node.js version you want to use
+          node-version: "22" # Specify the Node.js version you want to use
+
+      - name: Reload the source
+        run: source ~/.bashrc
 
       - name: Install dependencies
         run: npm install
