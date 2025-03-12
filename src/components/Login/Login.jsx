@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "../../../firebaseConfig.js"; // Ensure Firebase is initialized
-
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const Login = ({ onClose, onSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,7 +55,7 @@ const Login = ({ onClose, onSignup }) => {
         sanitizedPassword
       );
       const idToken = await userCredential.user.getIdToken();
-      const response = await fetch("http://localhost:8000/api/user/login/", {
+      const response = await fetch(`${baseUrl}api/user/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const Login = ({ onClose, onSignup }) => {
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      const response = await fetch("http://localhost:8000/api/user/login/", {
+      const response = await fetch(`${baseUrl}api/user/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

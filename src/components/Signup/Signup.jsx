@@ -12,6 +12,7 @@ const Signup = ({ onClose, onLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@(gmail\.com|outlook\.com|yahoo\.com)$/;
@@ -58,7 +59,7 @@ const Signup = ({ onClose, onLogin }) => {
       );
       const idToken = await userCredential.user.getIdToken();
       console.log(idToken);
-      const response = await fetch("http://localhost:8000/api/user/signup/", {
+      const response = await fetch(`${baseUrl}api/user/signup/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +93,7 @@ const Signup = ({ onClose, onLogin }) => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const idToken = await userCredential.user.getIdToken();
-      const response = await fetch("http://localhost:8000/api/user/signup/", {
+      const response = await fetch(`${baseUrl}api/user/signup/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
