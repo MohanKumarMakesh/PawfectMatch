@@ -1,33 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "./dashboard.css";
 import AdoptPopup from "../../components/AdoptPopup/AdoptPopup";
+import AddDog from "../../components/AddDog/AddDog"; // Import the new component
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [searchBreed, setSearchBreed] = useState("");
   const [searchCounty, setSearchCounty] = useState("");
   const [filteredDogs, setFilteredDogs] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showAdoptPopup, setShowAdoptPopup] = useState(false);
+  const [showAddDogPopup, setShowAddDogPopup] = useState(false); // State for the add dog popup
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
+  const fetchDogs = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/dogs/`);
+      const data = await response.json();
+      setFilteredDogs(data);
+    } catch (error) {
+      console.error("Error fetching dogs:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDogs = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/api/dogs/");
-        const data = await response.json();
-        setFilteredDogs(data);
-      } catch (error) {
-        console.error("Error fetching dogs:", error);
-      }
-    };
-
     fetchDogs();
   }, []);
 
   useEffect(() => {
     const fetchDogs = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/dogs/");
+        const response = await fetch(`${baseUrl}/api/dogs/`);
         const data = await response.json();
         const filtered = data.filter(
           (dog) =>
@@ -44,11 +47,23 @@ const Dashboard = () => {
   }, [searchBreed, searchCounty]);
 
   const handleAdoptClick = () => {
-    setShowPopup(true);
+    setShowAdoptPopup(true);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
+  const handleCloseAdoptPopup = () => {
+    setShowAdoptPopup(false);
+  };
+
+  const handleAddDogClick = () => {
+    setShowAddDogPopup(true);
+  };
+
+  const handleCloseAddDogPopup = () => {
+    setShowAddDogPopup(false);
+  };
+
+  const handleDogsUpdate = (updatedDogs) => {
+    setFilteredDogs(updatedDogs);
   };
 
   const handleLogout = () => {
@@ -99,7 +114,16 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-      {showPopup && <AdoptPopup onClose={handleClosePopup} />}
+      {showAdoptPopup && <AdoptPopup onClose={handleCloseAdoptPopup} />}
+      {showAddDogPopup && (
+        <AddDog
+          onClose={handleCloseAddDogPopup}
+          onDogsUpdate={handleDogsUpdate}
+        />
+      )}
+      <button className="add-dog-button" onClick={handleAddDogClick}>
+        +
+      </button>
     </div>
   );
 };

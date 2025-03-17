@@ -8,7 +8,10 @@ import {
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "../../../firebaseConfig.js"; // Ensure Firebase is initialized
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const env = import.meta.env.VITE_ENV;
+
 const Login = ({ onClose, onSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,27 +52,35 @@ const Login = ({ onClose, onSignup }) => {
     // Firebase login
     const auth = getAuth();
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        sanitizedEmail,
-        sanitizedPassword
-      );
-      const idToken = await userCredential.user.getIdToken();
-      const response = await fetch(`${baseUrl}api/user/login/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("access_token", data.tokens.access);
-        localStorage.setItem("refresh_token", data.tokens.refresh);
+      if (env === "development") {
+        // Bypass login validation in development mode
+        localStorage.setItem("access_token", "dev_access_token");
+        localStorage.setItem("refresh_token", "dev_refresh_token");
         onClose();
         navigate("/dashboard");
       } else {
-        throw new Error(data.error || "Login failed");
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          sanitizedEmail,
+          sanitizedPassword
+        );
+        const idToken = await userCredential.user.getIdToken();
+        const response = await fetch(`${baseUrl}/api/user/login/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idToken }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem("access_token", data.tokens.access);
+          localStorage.setItem("refresh_token", data.tokens.refresh);
+          onClose();
+          navigate("/dashboard");
+        } else {
+          throw new Error(data.error || "Login failed");
+        }
       }
     } catch (error) {
       console.error("Error logging in:", error);
@@ -81,23 +92,31 @@ const Login = ({ onClose, onSignup }) => {
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
-      const response = await fetch(`${baseUrl}api/user/login/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("access_token", data.tokens.access);
-        localStorage.setItem("refresh_token", data.tokens.refresh);
+      if (env === "development") {
+        // Bypass login validation in development mode
+        localStorage.setItem("access_token", "dev_access_token");
+        localStorage.setItem("refresh_token", "dev_refresh_token");
         onClose();
         navigate("/dashboard");
       } else {
-        throw new Error(data.error || "Login with Google failed");
+        const result = await signInWithPopup(auth, provider);
+        const idToken = await result.user.getIdToken();
+        const response = await fetch(`${baseUrl}/api/user/login/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idToken }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem("access_token", data.tokens.access);
+          localStorage.setItem("refresh_token", data.tokens.refresh);
+          onClose();
+          navigate("/dashboard");
+        } else {
+          throw new Error(data.error || "Login with Google failed");
+        }
       }
     } catch (error) {
       console.error("Error during Google Sign-In:", error);
