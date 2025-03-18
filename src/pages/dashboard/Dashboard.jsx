@@ -3,6 +3,7 @@ import "./dashboard.css";
 import AdoptPopup from "../../components/AdoptPopup/AdoptPopup";
 import AddDog from "../../components/AddDog/AddDog"; // Import the new component
 import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa"; // Import the delete icon
 
 const Dashboard = () => {
   const [searchBreed, setSearchBreed] = useState("");
@@ -10,6 +11,7 @@ const Dashboard = () => {
   const [filteredDogs, setFilteredDogs] = useState([]);
   const [showAdoptPopup, setShowAdoptPopup] = useState(false);
   const [showAddDogPopup, setShowAddDogPopup] = useState(false); // State for the add dog popup
+  const [currentUserId, setCurrentUserId] = useState(null); // State for the current user ID
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -24,6 +26,10 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    // Fetch the current user ID from local storage or an API
+    const userId = localStorage.getItem("user_id");
+    setCurrentUserId(userId);
+
     fetchDogs();
   }, []);
 
@@ -72,6 +78,17 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const handleDeleteDog = async (dogId) => {
+    try {
+      await fetch(`${baseUrl}/api/dogs/${dogId}/`, {
+        method: "DELETE",
+      });
+      fetchDogs(); // Refresh the dog list after deletion
+    } catch (error) {
+      console.error("Error deleting dog:", error);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="header">
@@ -111,6 +128,14 @@ const Dashboard = () => {
             <p>Breed: {dog.breed}</p>
             <p>County: {dog.county}</p>
             <button onClick={handleAdoptClick}>Adopt</button>
+            {dog.userId === currentUserId && (
+              <button
+                className="delete-button"
+                onClick={() => handleDeleteDog(dog.id)}
+              >
+                <FaTrash />
+              </button>
+            )}
           </div>
         ))}
       </div>
