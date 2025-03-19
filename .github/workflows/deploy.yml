@@ -46,5 +46,5 @@ jobs:
 
       - name: cleanup
         run: |
-        rm -rf _work/*
-        rm -rf _externals/*
+          rm -rf _work/*
+          rm -rf _externals/*
