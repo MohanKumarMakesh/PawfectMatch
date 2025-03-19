@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./addDog.css";
 import DOMPurify from "dompurify";
 
-const AddDog = ({ onClose, onDogsUpdate }) => {
+const AddDog = ({ onClose, onDogsUpdate, userId }) => {
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
   const [county, setCounty] = useState("");
@@ -29,14 +29,21 @@ const AddDog = ({ onClose, onDogsUpdate }) => {
     formData.append("breed", sanitizedBreed);
     formData.append("county", sanitizedCounty);
     formData.append("image", image);
+    formData.append("user", userId);
+
+    // Debugging: Log all form data entries
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     setIsUploading(true);
 
     try {
       const response = await fetch(`${baseUrl}/api/dogs/add/`, {
         method: "POST",
-        body: formData,
+        body: formData, // Pass FormData directly
       });
+
       if (response.ok) {
         const updatedDogs = await response.json();
         onDogsUpdate(updatedDogs); // Update the dogs list in the parent component

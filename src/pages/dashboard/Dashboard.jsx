@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./dashboard.css";
 import AdoptPopup from "../../components/AdoptPopup/AdoptPopup";
 import AddDog from "../../components/AddDog/AddDog"; // Import the new component
@@ -75,13 +75,17 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_id");
     navigate("/");
   };
 
   const handleDeleteDog = async (dogId) => {
     try {
-      await fetch(`${baseUrl}/api/dogs/${dogId}/`, {
+      await fetch(`${baseUrl}/api/dogs/delete/${dogId}/`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        }
       });
       fetchDogs(); // Refresh the dog list after deletion
     } catch (error) {
@@ -122,13 +126,14 @@ const Dashboard = () => {
       </div>
       <div className="adopt-card-container">
         {filteredDogs.map((dog, index) => (
-          <div className="card" key={index}>
+
+          < div className="card" key={index} >
             <img src={dog.image} alt={dog.name} />
             <h3>{dog.name}</h3>
             <p>Breed: {dog.breed}</p>
             <p>County: {dog.county}</p>
             <button onClick={handleAdoptClick}>Adopt</button>
-            {dog.userId === currentUserId && (
+            {String(dog.user) === String(currentUserId) && ( // Ensure both are strings
               <button
                 className="delete-button"
                 onClick={() => handleDeleteDog(dog.id)}
@@ -140,16 +145,19 @@ const Dashboard = () => {
         ))}
       </div>
       {showAdoptPopup && <AdoptPopup onClose={handleCloseAdoptPopup} />}
-      {showAddDogPopup && (
-        <AddDog
-          onClose={handleCloseAddDogPopup}
-          onDogsUpdate={handleDogsUpdate}
-        />
-      )}
+      {
+        showAddDogPopup && (
+          <AddDog
+            onClose={handleCloseAddDogPopup}
+            onDogsUpdate={handleDogsUpdate}
+            userId={currentUserId}
+          />
+        )
+      }
       <button className="add-dog-button" onClick={handleAddDogClick}>
         +
       </button>
-    </div>
+    </div >
   );
 };
 

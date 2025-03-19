@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DOMPurify from "dompurify";
 import {
   getAuth,
@@ -8,10 +8,10 @@ import {
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "../../../firebaseConfig.js"; // Ensure Firebase is initialized
+import PropTypes from "prop-types";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const env = import.meta.env.VITE_ENV;
-
 const Login = ({ onClose, onSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,6 +76,7 @@ const Login = ({ onClose, onSignup }) => {
         if (response.ok) {
           localStorage.setItem("access_token", data.tokens.access);
           localStorage.setItem("refresh_token", data.tokens.refresh);
+          localStorage.setItem("user_id", data.user_id);
           onClose();
           navigate("/dashboard");
         } else {
@@ -112,6 +113,7 @@ const Login = ({ onClose, onSignup }) => {
         if (response.ok) {
           localStorage.setItem("access_token", data.tokens.access);
           localStorage.setItem("refresh_token", data.tokens.refresh);
+          localStorage.setItem("user_id", data.user_id);
           onClose();
           navigate("/dashboard");
         } else {
@@ -153,7 +155,7 @@ const Login = ({ onClose, onSignup }) => {
           Log in with Google
         </button>
         <p className="signup-link">
-          Don't have an account?{" "}
+          Don`t have an account?{" "}
           <a href="#signup" onClick={onSignup}>
             Sign up
           </a>
@@ -161,6 +163,10 @@ const Login = ({ onClose, onSignup }) => {
       </div>
     </div>
   );
+};
+Login.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onSignup: PropTypes.func.isRequired,
 };
 
 export default Login;

@@ -58,8 +58,7 @@ const Signup = ({ onClose, onLogin }) => {
         sanitizedPassword
       );
       const idToken = await userCredential.user.getIdToken();
-      console.log(idToken);
-      const response = await fetch(`${baseUrl}api/user/signup/`, {
+      const response = await fetch(`${baseUrl}/api/user/signup/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +92,7 @@ const Signup = ({ onClose, onLogin }) => {
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
       const idToken = await userCredential.user.getIdToken();
-      const response = await fetch(`${baseUrl}api/user/signup/`, {
+      const response = await fetch(`${baseUrl}/api/user/signup/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
