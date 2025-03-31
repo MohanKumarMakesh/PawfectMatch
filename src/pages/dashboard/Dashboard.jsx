@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import "./dashboard.css";
 import AdoptPopup from "../../components/AdoptPopup/AdoptPopup";
+import EditDogPopup from "../../components/EditDogPopup/EditDogPopup";
 import AddDog from "../../components/AddDog/AddDog"; // Import the new component
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from "react-icons/fa"; // Import the delete icon
+import { FaTrash, FaEdit } from "react-icons/fa"; // Import the delete icon
 
 const Dashboard = () => {
   const [searchBreed, setSearchBreed] = useState("");
@@ -12,6 +13,8 @@ const Dashboard = () => {
   const [showAdoptPopup, setShowAdoptPopup] = useState(false);
   const [showAddDogPopup, setShowAddDogPopup] = useState(false); // State for the add dog popup
   const [currentUserId, setCurrentUserId] = useState(null); // State for the current user ID
+  const [editingDog, setEditingDog] = useState(null); // State for the dog being edited
+  const [showEditPopup, setShowEditPopup] = useState(false); // State for the edit popup
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -33,6 +36,31 @@ const Dashboard = () => {
     fetchDogs();
   }, []);
 
+  const handleEditDog = (dog) => {
+    setEditingDog(dog); // Set the dog being edited
+    setShowEditPopup(true); // Show the edit popup
+  };
+
+  const handleCloseEditPopup = () => {
+    setShowEditPopup(false);
+    setEditingDog(null); // Clear the editing dog state
+  };
+
+  const handleSaveEdit = async (updatedDog) => {
+    try {
+      await fetch(`${baseUrl}/api/dogs/${updatedDog.id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedDog),
+      });
+      fetchDogs(); // Refresh the dog list after saving
+      handleCloseEditPopup(); // Close the edit popup
+    } catch (error) {
+      console.error("Error updating dog:", error);
+    }
+  };
   useEffect(() => {
     const fetchDogs = async () => {
       try {
@@ -83,6 +111,7 @@ const Dashboard = () => {
     try {
       await fetch(`${baseUrl}/api/dogs/delete/${dogId}/`, {
         method: "DELETE",
+        
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("access_token")}`
         }
@@ -133,6 +162,21 @@ const Dashboard = () => {
             <p>Breed: {dog.breed}</p>
             <p>County: {dog.county}</p>
             <button onClick={handleAdoptClick}>Adopt</button>
+            {dog.userId === currentUserId && (
+              <>
+                <button
+                  className="edit-button"
+                  onClick={() => handleEditDog(dog)}
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  className="delete-button"
+                  onClick={() => handleDeleteDog(dog.id)}
+                >
+                  <FaTrash />
+                </button>
+              </>
             {String(dog.user) === String(currentUserId) && ( // Ensure both are strings
               <button
                 className="delete-button"
@@ -144,6 +188,13 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
+      {showEditPopup && editingDog && (
+        <EditDogPopup
+          dog={editingDog}
+          onClose={handleCloseEditPopup}
+          onSave={handleSaveEdit}
+        />
+      )}
       {showAdoptPopup && <AdoptPopup onClose={handleCloseAdoptPopup} />}
       {
         showAddDogPopup && (

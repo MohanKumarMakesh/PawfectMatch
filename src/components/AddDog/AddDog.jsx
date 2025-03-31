@@ -40,6 +40,7 @@ const AddDog = ({ onClose, onDogsUpdate, userId }) => {
 
     try {
       const response = await fetch(`${baseUrl}/api/dogs/add/`, {
+        mode: 'no-cors',
         method: "POST",
         body: formData, // Pass FormData directly
       });
